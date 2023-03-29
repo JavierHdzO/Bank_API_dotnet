@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using bank_api.Data;
+using bank_api.Models;
+using bank_api.Interfaces;
+using bank_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["ConnectionStrings:NpgsqlConnection"];
@@ -11,6 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BankContext>( options => options.UseNpgsql( connectionString ));
+builder.Services.AddScoped<IContextService<User>, UserService>();
+
 
 var app = builder.Build();
 
