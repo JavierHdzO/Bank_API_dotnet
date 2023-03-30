@@ -30,7 +30,8 @@ public class UserService : IContextService<UserDto>
         catch (Exception exception)
         {   
             _logger.LogError(exception.ToString());
-            throw;
+            
+            return new StatusCodeResult(500);
         }
     }
 
@@ -48,7 +49,8 @@ public class UserService : IContextService<UserDto>
         catch (Exception exception)
         {
             _logger.LogError(exception.ToString());
-            throw;
+            
+            return new StatusCodeResult(500);
         }
     }
 
@@ -71,7 +73,7 @@ public class UserService : IContextService<UserDto>
         catch (Exception exception)
         {
             _logger.LogError(exception.ToString());
-            throw;
+            return new StatusCodeResult(500);
         }
     }
 
@@ -88,7 +90,7 @@ public class UserService : IContextService<UserDto>
     }
 
 
-    private UserDto ToUserDto(User user){
+    private static UserDto ToUserDto(User user){
         return new UserDto{
             Id = user.UserId,
             Email = user.Email,

@@ -14,7 +14,7 @@ public class UserDto {
 
     [Required]
     [MinLength(8)]
-    [JsonIgnore]
+    [field: NonSerialized]
     public string Password { get; set; } = null!;
 
     public long? RoleId {get; set;}
