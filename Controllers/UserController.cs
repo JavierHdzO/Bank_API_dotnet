@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using bank_api.Models;
 using bank_api.Models.Dtos;
 using bank_api.Interfaces;
@@ -35,6 +36,20 @@ public class UserController: ControllerBase {
         if( user == null ) return  NotFound();
 
         return user;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<UserDto>> Create([FromBody] UserDto userDto){
+
+        // var user = await _userService.CreateOne(userDto);
+
+        // if(user == null) return BadRequest();
+
+
+        // return CreatedAtAction(nameof(Create), new { Id = user.});
+
+        return await _userService.CreateOne(userDto);
+
     }
 
 }

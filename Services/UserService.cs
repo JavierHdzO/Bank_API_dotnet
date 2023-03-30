@@ -52,9 +52,27 @@ public class UserService : IContextService<UserDto>
         }
     }
 
-    public Task<ActionResult<UserDto>> CreateOne(UserDto obj)
+    public async Task<ActionResult<UserDto>> CreateOne(UserDto userDto)
     {
-        throw new NotImplementedException();
+        var user = new User{
+            Email = userDto.Email,
+            Password = userDto.Password
+        };
+
+        try
+        {
+            _bankContext.Users.Add(user);
+            await _bankContext.SaveChangesAsync();
+
+            userDto.RoleId = user.RoleId;
+
+            return new  CreatedAtActionResult(nameof(CreateOne),"Create", null, userDto );
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception.ToString());
+            throw;
+        }
     }
 
     public Task<IActionResult> DeleteOne(long Id)
