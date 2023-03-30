@@ -8,7 +8,7 @@ public interface IContextService<T>
     
     Task<ActionResult<IEnumerable<T>>> GetAll();
 
-    Task<ActionResult<T>> GetOne();
+    Task<ActionResult<T>?> GetOne(long Id);
 
     Task<ActionResult<T>> CreateOne( T obj );
 
