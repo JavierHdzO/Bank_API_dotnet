@@ -10,9 +10,9 @@ namespace bank_api.Controllers;
 [Route("api/[controller]")]
 public class UserController: ControllerBase {
 
-    private readonly IContextService<UserDto> _userService;
+    private readonly IContextService<UserDto, CreateUserDto, UpdateUserDto> _userService;
     public UserController(
-        IContextService<UserDto> userService
+        IContextService<UserDto, CreateUserDto, UpdateUserDto> userService
     )
     {
         _userService = userService;
@@ -39,16 +39,9 @@ public class UserController: ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserDto>> Create([FromBody] UserDto userDto){
+    public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
 
-        // var user = await _userService.CreateOne(userDto);
-
-        // if(user == null) return BadRequest();
-
-
-        // return CreatedAtAction(nameof(Create), new { Id = user.});
-
-        return await _userService.CreateOne(userDto);
+        return await _userService.CreateOne(createUserDto);
 
     }
 

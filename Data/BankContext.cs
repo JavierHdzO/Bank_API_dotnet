@@ -25,7 +25,7 @@ public class BankContext: DbContext {
                 userEntity.Property( user => user.Email ).IsRequired();
                 userEntity.Property( user => user.Password ).IsRequired();
                 userEntity.Property( user => user.Status ).HasDefaultValue(true);
-                // userEntity.Property( user => user.Role ).HasDefaultValue(1);
+                userEntity.Property( user => user.RoleId ).HasDefaultValue(1);
                 userEntity.Property( user => user.CreatedAt).HasDefaultValueSql("now()");
 
                 userEntity

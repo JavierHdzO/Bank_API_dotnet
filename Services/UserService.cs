@@ -7,7 +7,7 @@ using bank_api.Interfaces;
 
 namespace bank_api.Services;
 
-public class UserService : IContextService<UserDto>
+public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto>
 {
     private readonly  BankContext _bankContext;
     private readonly ILogger<BankContext> _logger;
@@ -54,11 +54,11 @@ public class UserService : IContextService<UserDto>
         }
     }
 
-    public async Task<ActionResult<UserDto>> CreateOne(UserDto userDto)
+    public async Task<ActionResult<UserDto>> CreateOne(CreateUserDto createUserDto)
     {
         var user = new User{
-            Email = userDto.Email,
-            Password = userDto.Password
+            Email = createUserDto.Email,
+            Password = createUserDto.Password
         };
 
         try
@@ -66,9 +66,8 @@ public class UserService : IContextService<UserDto>
             _bankContext.Users.Add(user);
             await _bankContext.SaveChangesAsync();
 
-            userDto.RoleId = user.RoleId;
 
-            return new  CreatedAtActionResult(nameof(CreateOne),"Create", null, userDto );
+            return new  CreatedResult(nameof(CreateOne), ToUserDto(user) );
         }
         catch (Exception exception)
         {
@@ -84,7 +83,7 @@ public class UserService : IContextService<UserDto>
 
 
 
-    public Task<IActionResult> UpdateOne(long Id, UserDto obj)
+    public Task<IActionResult> UpdateOne(long Id, UpdateUserDto obj)
     {
         throw new NotImplementedException();
     }

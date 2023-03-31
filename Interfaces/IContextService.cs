@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace bank_api.Interfaces;
 
-public interface IContextService<T>
+public interface IContextService<T, R, W>
 {
 
     
@@ -10,9 +10,9 @@ public interface IContextService<T>
 
     Task<ActionResult<T>?> GetOne(long Id);
 
-    Task<ActionResult<T>> CreateOne( T obj );
+    Task<ActionResult<T>> CreateOne( R obj );
 
-    Task<IActionResult> UpdateOne(long Id, T obj);
+    Task<IActionResult> UpdateOne(long Id, W obj);
 
     Task<IActionResult> DeleteOne(long Id);
 
