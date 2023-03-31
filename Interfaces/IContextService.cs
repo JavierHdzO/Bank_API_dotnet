@@ -12,8 +12,8 @@ public interface IContextService<T, R, W>
 
     Task<ActionResult<T>> CreateOne( R obj );
 
-    Task<IActionResult> UpdateOne(long Id, W obj);
+    Task<bool> UpdateOne(long Id, W obj);
 
-    Task<IActionResult> DeleteOne(long Id);
+    Task<bool> DeleteOne(long Id);
 
 }

@@ -78,7 +78,7 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
 
     public Task<IActionResult> DeleteOne(long Id)
     {
-        throw new NotImplementedException();
+        if(_bankContext.Users == null) return Not
     }
 
 

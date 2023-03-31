@@ -45,4 +45,11 @@ public class UserController: ControllerBase {
 
     }
 
+    [HttpDelete]
+    public async Task<IActionResult> Delete([FromRoute] long Id){
+        
+        var resp = await _userService.DeleteOne(Id);
+        return resp ? Ok() : BadRequest(); 
+    }
+
 }
