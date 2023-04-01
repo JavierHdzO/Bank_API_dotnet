@@ -76,14 +76,34 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
         }
     }
 
-    public Task<IActionResult> DeleteOne(long Id)
+    public async Task<bool> DeleteOne(long Id)
     {
-        if(_bankContext.Users == null) return Not
+        if(_bankContext.Users == null ) return  false;
+
+        try
+        {
+            var user = await _bankContext.Users.FindAsync(Id);
+            
+            if( user == null ) return false;
+
+            user.Status = false;
+
+            await _bankContext.SaveChangesAsync();
+
+            return true;
+
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception.ToString());
+            throw;
+        }
+        
     }
 
 
 
-    public Task<IActionResult> UpdateOne(long Id, UpdateUserDto obj)
+    public Task<bool> UpdateOne(long Id, UpdateUserDto obj)
     {
         throw new NotImplementedException();
     }
