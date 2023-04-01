@@ -16,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BankContext>( options => options.UseNpgsql( connectionString ));
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
+builder.Services.AddScoped<AuthService>();
 
 
 var app = builder.Build();
