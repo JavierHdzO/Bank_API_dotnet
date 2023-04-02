@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using bank_api.Data;
 using bank_api.Models;
 using bank_api.Models.Dtos;
@@ -15,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BankContext>( options => options.UseNpgsql( connectionString ));
+builder.Services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
 builder.Services.AddScoped<AuthService>();
 

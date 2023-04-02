@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using bank_api.Data;
 using bank_api.Models;
@@ -12,12 +13,17 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
     private readonly  BankContext _bankContext;
     private readonly ILogger<BankContext> _logger;
 
+    private readonly IPasswordHasher<User> _passwordHasher;
+
     public UserService(
-        BankContext bankContext,
-        ILogger<BankContext> logger )
+            BankContext bankContext,   
+            ILogger<BankContext> logger,
+            IPasswordHasher<User> passwordHasher
+         )
     {
         _bankContext = bankContext;
         _logger = logger;
+        _passwordHasher = passwordHasher;
 
     }
 
@@ -60,6 +66,8 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
             Email = createUserDto.Email,
             Password = createUserDto.Password
         };
+
+        user.Password = _passwordHasher.HashPassword(user, user.Password);
 
         try
         {
@@ -116,4 +124,6 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
             RoleId = user.RoleId
         };
     }
+
+    
 }

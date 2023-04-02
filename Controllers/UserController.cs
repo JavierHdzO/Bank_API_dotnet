@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using bank_api.Models;
 using bank_api.Models.Dtos;
@@ -11,11 +13,15 @@ namespace bank_api.Controllers;
 public class UserController: ControllerBase {
 
     private readonly IContextService<UserDto, CreateUserDto, UpdateUserDto> _userService;
+
+    private readonly IPasswordHasher<CreateUserDto> _passwordHasher;
     public UserController(
-        IContextService<UserDto, CreateUserDto, UpdateUserDto> userService
+        IContextService<UserDto, CreateUserDto, UpdateUserDto> userService,
+        IPasswordHasher<CreateUserDto> passwordHasher
     )
     {
         _userService = userService;
+        _passwordHasher = passwordHasher;
     }
 
     [HttpGet]
@@ -40,7 +46,7 @@ public class UserController: ControllerBase {
 
     [HttpPost]
     public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
-
+        createUserDto.Password =  _passwordHasher.HashPassword(createUserDto, createUserDto.Password);
         return await _userService.CreateOne(createUserDto);
 
     }
