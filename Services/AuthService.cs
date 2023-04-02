@@ -33,11 +33,14 @@ public class AuthService {
             
             var user = await  _bankContext.Users.SingleOrDefaultAsync(  x => x.Email == loginDto.Email );
 
-            if( user is null ) return null;
-            
-            PasswordVerificationResult verifyPassword = _passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password);
+            var confirmPassword =  user == null ? false 
+                : (_passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password)) == PasswordVerificationResult.Success;
 
-            if( verifyPassword != PasswordVerificationResult.Success ) return null;
+            // if( user is null ) return null;
+            
+            // PasswordVerificationResult verifyPassword = _passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password);
+
+            // if( verifyPassword != PasswordVerificationResult.Success ) return null;
             
             return user;
         }
