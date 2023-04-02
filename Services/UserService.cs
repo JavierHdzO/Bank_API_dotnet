@@ -67,7 +67,7 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
             Password = createUserDto.Password
         };
 
-        user.Password = _passwordHasher.HashPassword(user, user.Password);
+        _passwordHasher.HashPassword(user, user.Password);
 
         try
         {
