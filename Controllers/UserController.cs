@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using bank_api.Models;
 using bank_api.Models.Dtos;
 using bank_api.Interfaces;
@@ -34,6 +33,14 @@ public class UserController: ControllerBase {
         
     }
 
+    [HttpPost]
+    public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
+        createUserDto.Password =  _passwordHasher.HashPassword(createUserDto, createUserDto.Password);
+        return await _userService.CreateOne(createUserDto);
+
+    }
+
+    
     [HttpGet("{Id}")]
     public async Task<ActionResult<UserDto>> FindOne([FromRoute] long Id){
 
@@ -44,18 +51,13 @@ public class UserController: ControllerBase {
         return user;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
-        createUserDto.Password =  _passwordHasher.HashPassword(createUserDto, createUserDto.Password);
-        return await _userService.CreateOne(createUserDto);
 
-    }
-
-    [HttpDelete]
+    [Authorize]
+    [HttpDelete("{Id}")]
     public async Task<IActionResult> Delete([FromRoute] long Id){
         
         var resp = await _userService.DeleteOne(Id);
-        return resp ? Ok() : BadRequest(); 
+        return resp ? Ok( new { Message = "User has been deleted successfully"}) : BadRequest(); 
     }
 
 }
