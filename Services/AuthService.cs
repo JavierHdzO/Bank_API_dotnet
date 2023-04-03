@@ -33,7 +33,7 @@ public class AuthService {
             
             var user = await  _bankContext.Users.SingleOrDefaultAsync(  x => x.Email == loginDto.Email );
 
-            var confirmPassword =  user == null ? false 
+            var confirmPassword =  (user == null || user.Status == false) ? false 
                 : (_passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password)) == PasswordVerificationResult.Success;
 
             // if( user is null ) return null;
@@ -41,6 +41,8 @@ public class AuthService {
             // PasswordVerificationResult verifyPassword = _passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password);
 
             // if( verifyPassword != PasswordVerificationResult.Success ) return null;
+
+            if( !confirmPassword ) return null;
             
             return user;
         }
