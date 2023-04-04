@@ -11,13 +11,13 @@ namespace bank_api.Services;
 public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto>
 {
     private readonly  BankContext _bankContext;
-    private readonly ILogger<BankContext> _logger;
+    private readonly ILogger _logger;
 
     private readonly IPasswordHasher<User> _passwordHasher;
 
     public UserService(
             BankContext bankContext,   
-            ILogger<BankContext> logger,
+            ILogger<UserService> logger,
             IPasswordHasher<User> passwordHasher
          )
     {

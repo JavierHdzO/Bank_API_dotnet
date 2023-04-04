@@ -14,12 +14,12 @@ public class AuthService {
 
     private readonly IConfiguration _config;
     private readonly BankContext _bankContext;
-    private readonly ILogger<BankContext> _logger;
+    private readonly ILogger _logger;
 
     private readonly IPasswordHasher<User> _passwordHasher;
 
 
-    public AuthService(BankContext bankContext, ILogger<BankContext> logger, IConfiguration config, IPasswordHasher<User> passwordHasher){
+    public AuthService(BankContext bankContext, ILogger<AuthService> logger, IConfiguration config, IPasswordHasher<User> passwordHasher){
         _bankContext = bankContext;
         _logger = logger;
         _config = config;
