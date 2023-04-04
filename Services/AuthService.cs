@@ -55,12 +55,12 @@ public class AuthService {
     }
 
     public string GenerateJwt(User user){
-        
+
         var claims = new[]
         {
             // new Claim("UserId", user.UserId.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim("RoleType", user.RoleId.ToString())
+            new Claim("RoleType",  user.RoleId + "")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( _config.GetSection("Jwt:Key").Value!));

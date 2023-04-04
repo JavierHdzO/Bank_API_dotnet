@@ -52,7 +52,7 @@ public class UserController: ControllerBase {
     }
 
 
-    [Authorize]
+    [Authorize( Policy = "AdminRole" )]
     [HttpDelete("{Id}")]
     public async Task<IActionResult> Delete([FromRoute] long Id){
         
