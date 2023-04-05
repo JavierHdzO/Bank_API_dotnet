@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using bank_api.Data;
 using bank_api.Models;
@@ -10,14 +11,19 @@ namespace bank_api.Services;
 public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto>
 {
     private readonly  BankContext _bankContext;
-    private readonly ILogger<BankContext> _logger;
+    private readonly ILogger _logger;
+
+    private readonly IPasswordHasher<User> _passwordHasher;
 
     public UserService(
-        BankContext bankContext,
-        ILogger<BankContext> logger )
+            BankContext bankContext,   
+            ILogger<UserService> logger,
+            IPasswordHasher<User> passwordHasher
+         )
     {
         _bankContext = bankContext;
         _logger = logger;
+        _passwordHasher = passwordHasher;
 
     }
 
@@ -61,6 +67,8 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
             Password = createUserDto.Password
         };
 
+        _passwordHasher.HashPassword(user, user.Password);
+
         try
         {
             _bankContext.Users.Add(user);
@@ -76,14 +84,34 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
         }
     }
 
-    public Task<IActionResult> DeleteOne(long Id)
+    public async Task<bool> DeleteOne(long Id)
     {
-        if(_bankContext.Users == null) return Not
+        if(_bankContext.Users == null ) return  false;
+
+        try
+        {
+            var user = await _bankContext.Users.FindAsync(Id);
+            
+            if( user == null ) return false;
+
+            user.Status = false;
+
+            await _bankContext.SaveChangesAsync();
+
+            return true;
+
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception.ToString());
+            throw;
+        }
+        
     }
 
 
 
-    public Task<IActionResult> UpdateOne(long Id, UpdateUserDto obj)
+    public Task<bool> UpdateOne(long Id, UpdateUserDto obj)
     {
         throw new NotImplementedException();
     }
@@ -96,4 +124,6 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
             RoleId = user.RoleId
         };
     }
+
+    
 }

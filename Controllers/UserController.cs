@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using bank_api.Models;
 using bank_api.Models.Dtos;
 using bank_api.Interfaces;
@@ -11,11 +12,15 @@ namespace bank_api.Controllers;
 public class UserController: ControllerBase {
 
     private readonly IContextService<UserDto, CreateUserDto, UpdateUserDto> _userService;
+
+    private readonly IPasswordHasher<CreateUserDto> _passwordHasher;
     public UserController(
-        IContextService<UserDto, CreateUserDto, UpdateUserDto> userService
+        IContextService<UserDto, CreateUserDto, UpdateUserDto> userService,
+        IPasswordHasher<CreateUserDto> passwordHasher
     )
     {
         _userService = userService;
+        _passwordHasher = passwordHasher;
     }
 
     [HttpGet]
@@ -28,6 +33,14 @@ public class UserController: ControllerBase {
         
     }
 
+    [HttpPost]
+    public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
+        createUserDto.Password =  _passwordHasher.HashPassword(createUserDto, createUserDto.Password);
+        return await _userService.CreateOne(createUserDto);
+
+    }
+
+    
     [HttpGet("{Id}")]
     public async Task<ActionResult<UserDto>> FindOne([FromRoute] long Id){
 
@@ -38,18 +51,13 @@ public class UserController: ControllerBase {
         return user;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
 
-        return await _userService.CreateOne(createUserDto);
-
-    }
-
-    [HttpDelete]
+    [Authorize( Policy = "AdminRole" )]
+    [HttpDelete("{Id}")]
     public async Task<IActionResult> Delete([FromRoute] long Id){
         
         var resp = await _userService.DeleteOne(Id);
-        return resp ? Ok() : BadRequest(); 
+        return resp ? Ok( new { Message = "User has been deleted successfully"}) : BadRequest(); 
     }
 
 }
