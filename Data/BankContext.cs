@@ -31,8 +31,11 @@ public class BankContext: DbContext {
                 userEntity
                     .HasOne( user => user.Role)
                     .WithMany( role =>  role.Users );
+
+                userEntity.HasAlternateKey( user => user.Email );
                 
             }
+            
         );
 
         modelBuilder.Entity<Client>(
