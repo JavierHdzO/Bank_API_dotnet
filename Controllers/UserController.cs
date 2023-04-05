@@ -34,6 +34,9 @@ public class UserController: ControllerBase {
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto createUserDto){
         createUserDto.Password =  _passwordHasher.HashPassword(createUserDto, createUserDto.Password);
         return await _userService.CreateOne(createUserDto);
@@ -42,6 +45,10 @@ public class UserController: ControllerBase {
 
     
     [HttpGet("{Id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UserDto>> FindOne([FromRoute] long Id){
 
         var user = await _userService.GetOne(Id);
@@ -53,6 +60,10 @@ public class UserController: ControllerBase {
 
 
     [Authorize( Policy = "AdminRole" )]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpDelete("{Id}")]
     public async Task<IActionResult> Delete([FromRoute] long Id){
         

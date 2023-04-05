@@ -36,12 +36,6 @@ public class AuthService {
             var confirmPassword =  (user == null || user.Status == false) ? false 
                 : (_passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password)) == PasswordVerificationResult.Success;
 
-            // if( user is null ) return null;
-            
-            // PasswordVerificationResult verifyPassword = _passwordHasher.VerifyHashedPassword(user, user.Password, loginDto.Password);
-
-            // if( verifyPassword != PasswordVerificationResult.Success ) return null;
-
             if( !confirmPassword ) return null;
             
             return user;
@@ -58,9 +52,9 @@ public class AuthService {
 
         var claims = new[]
         {
-            // new Claim("UserId", user.UserId.ToString()),
+            new Claim("UserId", user.UserId.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim("RoleType",  user.RoleId + "")
+            new Claim("RoleType",  user.RoleId.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( _config.GetSection("Jwt:Key").Value!));
