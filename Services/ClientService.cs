@@ -114,6 +114,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
     private static ClientDto ToClientDto(Client client){
 
         return new ClientDto{
+            ClientId = client.ClientId,
             Name = client.Name,
             LastName =  client.LastName,
             Age = client.Age,
