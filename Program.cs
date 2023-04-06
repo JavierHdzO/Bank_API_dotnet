@@ -1,10 +1,10 @@
+using bank_api.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using bank_api.Data;
-using bank_api.Models;
 using bank_api.Models.Dtos;
 using bank_api.Interfaces;
 using bank_api.Services;
@@ -15,7 +15,10 @@ var jwtConfiguration = builder.Configuration["Jwt:Key"];
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers( options => {
+    options.InputFormatters.Insert(0, JIF.GetJsonPatchInputFormatter());
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
