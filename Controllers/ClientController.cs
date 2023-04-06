@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using bank_api.Services;
 using bank_api.Models.Dtos;
-
+using bank_api.Interfaces;
 
 namespace bank_api.Controllers;
 
-// [Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ClientController: ControllerBase {
 
-    private readonly ClientService _clientService;
+    private readonly IContextService<ClientDto, CreateClientDto, UpdateClientDto> _clientService;
+
     public ClientController(
-        ClientService clientService
+        IContextService<ClientDto, CreateClientDto, UpdateClientDto> clientService
     ){
         _clientService =  clientService;
     }

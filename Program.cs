@@ -25,6 +25,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BankContext>( options => options.UseNpgsql( connectionString ));
 builder.Services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
+builder.Services.AddScoped<IContextService<ClientDto, CreateClientDto, UpdateClientDto>, ClientService>();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
