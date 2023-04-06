@@ -5,6 +5,7 @@ using bank_api.Data;
 using bank_api.Models;
 using bank_api.Models.Dtos;
 using bank_api.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace bank_api.Services;
 
@@ -125,5 +126,8 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
         };
     }
 
-    
+    public Task<ActionResult<UserDto>> PatchUpdateOne(long Id, JsonPatchDocument jsonPatchDocument)
+    {
+        throw new NotImplementedException();
+    }
 }

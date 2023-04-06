@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 using bank_api.Interfaces;
 using bank_api.Data;
 using bank_api.Models;
 using bank_api.Models.Dtos;
-using Microsoft.AspNetCore.Mvc;
 
 namespace bank_api.Services;
 
@@ -11,7 +12,6 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 {
     private readonly ILogger _logger;
     private readonly BankContext _bankContext;
-
 
     public ClientService(
         ILogger<ClientService> logger,
@@ -111,6 +111,32 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
     }
 
 
+    public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, JsonPatchDocument<Client> patchDoc)
+    {
+        
+        try
+        {
+            if( patchDoc == null) return new BadRequestResult();
+
+            var client = await _bankContext.Clients.FindAsync(Id);
+
+            if(client is null ) return new NotFoundResult();
+
+            patchDoc.ApplyTo(client);
+            
+            await _bankContext.SaveChangesAsync();
+
+            return ToClientDto(client);
+            
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Error");
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+
     private static ClientDto ToClientDto(Client client){
 
         return new ClientDto{
@@ -123,4 +149,5 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
         };
 
     }
+
 }

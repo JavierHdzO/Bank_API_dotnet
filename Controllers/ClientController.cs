@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using bank_api.Services;
+using bank_api.Models;
 using bank_api.Models.Dtos;
 using bank_api.Interfaces;
 
@@ -11,12 +13,12 @@ namespace bank_api.Controllers;
 [Route("api/[controller]")]
 public class ClientController: ControllerBase {
 
-    private readonly IContextService<ClientDto, CreateClientDto, UpdateClientDto> _clientService;
+    private readonly ClientService _clientService;
 
     public ClientController(
         IContextService<ClientDto, CreateClientDto, UpdateClientDto> clientService
     ){
-        _clientService =  clientService;
+        _clientService =  (ClientService) clientService;
     }
     
     [HttpGet]
@@ -37,9 +39,15 @@ public class ClientController: ControllerBase {
 
         return client!;
     
+
     }
 
-    [HttpDelete]
+    [HttpPatch("{Id}")]
+    public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, [FromBody] JsonPatchDocument<Client> patchDoc){
+        return await _clientService.PatchUpdateOne(Id, patchDoc);
+    }
+
+    [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteClient([FromRoute] long Id){
 
         var result =  await _clientService.DeleteOne(Id);
