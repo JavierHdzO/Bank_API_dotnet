@@ -51,12 +51,14 @@ public class BankContext: DbContext {
                     .IsRequired()
                     .HasColumnType("smallint");
                 clientEntity.Property( client => client.Status ).HasDefaultValue(true);
+                clientEntity.Property( client => client.UserId ).IsRequired();
                 clientEntity.Property( client => client.CreatedAt ).HasDefaultValueSql("now()");
 
                 clientEntity
                     .HasOne( client => client.User )
                     .WithOne( user => user.Client );
                 
+                clientEntity.HasAlternateKey( client => client.UserId);
 
             }
         );

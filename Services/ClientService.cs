@@ -53,7 +53,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
         {
             var client = await _bankContext.Clients.FindAsync(Id);
 
-            if(client is null || !client.Status ) return false;
+            if(client is null || client.Status == false ) return false;
 
             client.Status = false;
 
