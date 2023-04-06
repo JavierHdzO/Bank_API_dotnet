@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;
 using bank_api.Interfaces;
@@ -111,7 +112,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
     }
 
 
-    public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, JsonPatchDocument<Client> patchDoc)
+    public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, JsonPatchDocument<UpdateClientDto> patchDoc)
     {
         
         try
@@ -122,7 +123,11 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             if(client is null ) return new NotFoundResult();
 
-            patchDoc.ApplyTo(client);
+            var clientUpdated = ToUpdateClientDto(client);
+
+            patchDoc.ApplyTo(clientUpdated);
+            
+            UpdateClient(clientUpdated, client);
             
             await _bankContext.SaveChangesAsync();
 
@@ -148,6 +153,22 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             UserId = client.UserId
         };
 
+    }
+
+    private static UpdateClientDto ToUpdateClientDto(Client client){
+
+        return new UpdateClientDto{
+            Name = client.Name,
+            LastName = client.LastName,
+            Genre = client.Genre,
+            Age = client.Age
+        };
+    }
+
+    private static void UpdateClient(UpdateClientDto updateClientDto, Client client){
+        client.Name = updateClientDto.Name!.ToUpper();
+        client.LastName = updateClientDto.LastName!.ToUpper();
+        client.Genre = updateClientDto.Genre!.ToUpper();
     }
 
 }

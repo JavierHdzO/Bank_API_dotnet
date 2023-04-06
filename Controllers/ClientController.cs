@@ -43,7 +43,7 @@ public class ClientController: ControllerBase {
     }
 
     [HttpPatch("{Id}")]
-    public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, [FromBody] JsonPatchDocument<Client> patchDoc){
+    public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, [FromBody] JsonPatchDocument<UpdateClientDto> patchDoc){
         return await _clientService.PatchUpdateOne(Id, patchDoc);
     }
 
