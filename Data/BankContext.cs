@@ -8,6 +8,8 @@ public class BankContext: DbContext {
     public DbSet<User> Users {get; set;} = null!;
     public DbSet<Role> Roles {get; set;} = null!;
 
+    public DbSet<Client> Clients {get; set;} = null!;
+
     public BankContext(DbContextOptions<BankContext> options): base(options){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
