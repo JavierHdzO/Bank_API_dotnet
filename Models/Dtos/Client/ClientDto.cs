@@ -12,4 +12,6 @@ public class ClientDto {
     public short  Age {get; set;}
 
     public string Genre {get; set;} = null!;
+
+    public long? UserId {get; set;}
 }

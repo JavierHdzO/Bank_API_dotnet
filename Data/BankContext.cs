@@ -50,6 +50,7 @@ public class BankContext: DbContext {
                 clientEntity.Property( client => client.Age )
                     .IsRequired()
                     .HasColumnType("smallint");
+                clientEntity.Property( client => client.Status ).HasDefaultValue(true);
                 clientEntity.Property( client => client.CreatedAt ).HasDefaultValueSql("now()");
 
                 clientEntity
