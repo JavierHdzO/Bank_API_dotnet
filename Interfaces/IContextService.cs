@@ -12,7 +12,7 @@ public interface IContextService<T, R, W>
 
     Task<ActionResult<T>> CreateOne( R obj );
 
-    Task<bool> UpdateOne(long Id, W obj);
+    Task<bool>? UpdateOne(long Id, W obj);
 
     Task<bool> DeleteOne(long Id);
 
