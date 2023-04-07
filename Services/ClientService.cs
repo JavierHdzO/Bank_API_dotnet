@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;
 using bank_api.Interfaces;
@@ -13,13 +14,16 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 {
     private readonly ILogger _logger;
     private readonly BankContext _bankContext;
+    private readonly IMapper _mapper;
 
     public ClientService(
         ILogger<ClientService> logger,
-        BankContext bankContext
+        BankContext bankContext,
+        IMapper mapper
     ){
         _logger = logger;
         _bankContext = bankContext;
+        _mapper = mapper;
 
     }
 
@@ -114,20 +118,25 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
     public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, JsonPatchDocument<UpdateClientDto> patchDoc)
     {
-        
+        JsonPatchDocument<Client> patchDocClient = new JsonPatchDocument<Client>();
+
         try
         {
-            if( patchDoc == null) return new BadRequestResult();
+            patchDocClient = _mapper.Map(patchDoc,patchDocClient);
+
+            if( patchDoc == null || patchDocClient == null) return new BadRequestResult();
 
             var client = await _bankContext.Clients.FindAsync(Id);
 
             if(client is null ) return new NotFoundResult();
 
-            var clientUpdated = ToUpdateClientDto(client);
+            // var clientUpdated = ToUpdateClientDto(client);
 
-            patchDoc.ApplyTo(clientUpdated);
+            // patchDoc.ApplyTo(clientUpdated);
             
-            UpdateClient(clientUpdated, client);
+            // UpdateClient(clientUpdated, client);
+
+            patchDocClient.ApplyTo(client);
             
             await _bankContext.SaveChangesAsync();
 
