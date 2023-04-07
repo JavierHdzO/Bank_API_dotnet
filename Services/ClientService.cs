@@ -123,6 +123,9 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
         try
         {
             patchDocClient = _mapper.Map(patchDoc,patchDocClient);
+            
+            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            
 
             if( patchDoc == null || patchDocClient == null) return new BadRequestResult();
 
@@ -162,22 +165,6 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             UserId = client.UserId
         };
 
-    }
-
-    private static UpdateClientDto ToUpdateClientDto(Client client){
-
-        return new UpdateClientDto{
-            Name = client.Name,
-            LastName = client.LastName,
-            Genre = client.Genre,
-            Age = client.Age
-        };
-    }
-
-    private static void UpdateClient(UpdateClientDto updateClientDto, Client client){
-        client.Name = updateClientDto.Name!.ToUpper();
-        client.LastName = updateClientDto.LastName!.ToUpper();
-        client.Genre = updateClientDto.Genre!.ToUpper();
     }
 
 }
