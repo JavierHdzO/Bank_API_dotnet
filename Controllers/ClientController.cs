@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using bank_api.Services;
@@ -44,6 +45,7 @@ public class ClientController: ControllerBase {
 
     [HttpPatch("{Id}")]
     public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, [FromBody] JsonPatchDocument<UpdateClientDto> patchDoc){
+        
         return await _clientService.PatchUpdateOne(Id, patchDoc);
     }
 

@@ -1,11 +1,13 @@
 using bank_api.Formatters;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using bank_api.Data;
 using bank_api.Models.Dtos;
+using bank_api.Models.Profiles;
 using bank_api.Interfaces;
 using bank_api.Services;
 
@@ -23,6 +25,7 @@ builder.Services.AddControllers( options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BankContext>( options => options.UseNpgsql( connectionString ));
+builder.Services.AddAutoMapper(typeof(ClientProfile));
 builder.Services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
 builder.Services.AddScoped<IContextService<ClientDto, CreateClientDto, UpdateClientDto>, ClientService>();
