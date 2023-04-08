@@ -140,6 +140,8 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             // UpdateClient(clientUpdated, client);
 
             patchDocClient.ApplyTo(client);
+
+            client = _mapper.Map<Client, Client>(client);
             
             await _bankContext.SaveChangesAsync();
 
