@@ -25,7 +25,7 @@ builder.Services.AddControllers( options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BankContext>( options => options.UseNpgsql( connectionString ));
-builder.Services.AddAutoMapper(typeof(ClientPatchProfile));
+builder.Services.AddAutoMapper(typeof(ClientProfile));
 builder.Services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
 builder.Services.AddScoped<IContextService<ClientDto, CreateClientDto, UpdateClientDto>, ClientService>();

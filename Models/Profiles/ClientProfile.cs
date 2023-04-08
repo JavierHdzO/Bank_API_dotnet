@@ -7,10 +7,14 @@ using bank_api.Models.Dtos;
 namespace bank_api.Models.Profiles;
 
 
-public class ClientPatchProfile: Profile 
+public class ClientProfile: Profile 
 {
-    public ClientPatchProfile(){
+    public ClientProfile(){
         CreateMap<JsonPatchDocument<UpdateClientDto>, JsonPatchDocument<Client>>();
         CreateMap<Operation<UpdateClientDto>, Operation<Client>>();
+        
+        CreateMap<Client, Client>().AddTransform<string>(val => val.ToUpper());
+
+        CreateMap<Client, ClientDto>();
     }
 }

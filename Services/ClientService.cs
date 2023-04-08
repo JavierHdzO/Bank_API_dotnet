@@ -130,17 +130,13 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             if(client is null ) return new NotFoundResult();
 
-            // var clientUpdated = ToUpdateClientDto(client);
-
-            // patchDoc.ApplyTo(clientUpdated);
-            
-            // UpdateClient(clientUpdated, client);
-
             patchDocClient.ApplyTo(client);
+
+            client = _mapper.Map<Client, Client>(client);
             
             await _bankContext.SaveChangesAsync();
 
-            return ToClientDto(client);
+            return _mapper.Map<Client, ClientDto>(client);
             
         }
         catch (Exception exception)
@@ -162,22 +158,6 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             UserId = client.UserId
         };
 
-    }
-
-    private static UpdateClientDto ToUpdateClientDto(Client client){
-
-        return new UpdateClientDto{
-            Name = client.Name,
-            LastName = client.LastName,
-            Genre = client.Genre,
-            Age = client.Age
-        };
-    }
-
-    private static void UpdateClient(UpdateClientDto updateClientDto, Client client){
-        client.Name = updateClientDto.Name!.ToUpper();
-        client.LastName = updateClientDto.LastName!.ToUpper();
-        client.Genre = updateClientDto.Genre!.ToUpper();
     }
 
 }
