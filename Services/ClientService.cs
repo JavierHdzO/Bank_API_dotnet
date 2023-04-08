@@ -123,9 +123,6 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
         try
         {
             patchDocClient = _mapper.Map(patchDoc,patchDocClient);
-            
-            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
-            
 
             if( patchDoc == null || patchDocClient == null) return new BadRequestResult();
 
@@ -133,19 +130,13 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             if(client is null ) return new NotFoundResult();
 
-            // var clientUpdated = ToUpdateClientDto(client);
-
-            // patchDoc.ApplyTo(clientUpdated);
-            
-            // UpdateClient(clientUpdated, client);
-
             patchDocClient.ApplyTo(client);
 
             client = _mapper.Map<Client, Client>(client);
             
             await _bankContext.SaveChangesAsync();
 
-            return ToClientDto(client);
+            return _mapper.Map<Client, ClientDto>(client);
             
         }
         catch (Exception exception)
