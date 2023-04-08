@@ -110,9 +110,25 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
         }
     }
 
-    public Task<bool> UpdateOne(long Id, UpdateClientDto obj)
+    public async Task<ActionResult> UpdateOne(long Id, UpdateClientDto updateClientDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var client = await _bankContext.Clients.SingleAsync( client => client.ClientId == Id && client.Status == true);
+
+            if(client is null) return new NotFoundObjectResult( new { Message = $"Client with Id = {Id} not found"});
+
+            client =  _mapper.Map<UpdateClientDto, Client>(updateClientDto);
+
+            await _bankContext.SaveChangesAsync();
+
+            return new OkObjectResult( new { Message = "Client has been updated"});
+
+        }
+        catch (Exception)
+        {
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
     }
 
 
@@ -128,12 +144,16 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             var client = await _bankContext.Clients.FindAsync(Id);
 
-            if(client is null ) return new NotFoundResult();
+            if(client is null || client.Status == false ) return new NotFoundResult();
 
             patchDocClient.ApplyTo(client);
 
-            client = _mapper.Map<Client, Client>(client);
-            
+            _mapper.Map<Client, Client>(client, client);
+
+            _logger.LogInformation(client.Name);
+
+            // _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             await _bankContext.SaveChangesAsync();
 
             return _mapper.Map<Client, ClientDto>(client);

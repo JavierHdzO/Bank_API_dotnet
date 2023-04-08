@@ -15,6 +15,8 @@ public class ClientProfile: Profile
         
         CreateMap<Client, Client>().AddTransform<string>(val => val.ToUpper());
 
+        CreateMap<UpdateClientDto, Client>().AddTransform<string>( val => val.ToUpper());
+
         CreateMap<Client, ClientDto>();
     }
 }
