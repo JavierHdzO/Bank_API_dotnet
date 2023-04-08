@@ -43,7 +43,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             await _bankContext.SaveChangesAsync();
             
-            return new CreatedResult(nameof(CreateOne), ToClientDto(client));
+            return new CreatedResult(nameof(CreateOne), _mapper.Map<Client, ClientDto>(client));
         }
         catch (Exception exception)
         {
@@ -80,7 +80,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
         try
         {
-            var clients = await _bankContext.Clients.Select( client => ToClientDto( client ) ).ToListAsync();
+            var clients = await _bankContext.Clients.Select( client => _mapper.Map<Client, ClientDto>(client) ).ToListAsync();
 
             return clients;
         }
@@ -100,7 +100,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             if(client is null) return new NotFoundResult();
 
-            return ToClientDto(client);
+            return _mapper.Map<Client, ClientDto>(client);
         }
         catch (Exception exception)
         {   
@@ -144,20 +144,6 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             _logger.LogError(exception, "Error");
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
-    }
-
-
-    private static ClientDto ToClientDto(Client client){
-
-        return new ClientDto{
-            ClientId = client.ClientId,
-            Name = client.Name,
-            LastName =  client.LastName,
-            Age = client.Age,
-            Genre = client.Genre,
-            UserId = client.UserId
-        };
-
     }
 
 }
