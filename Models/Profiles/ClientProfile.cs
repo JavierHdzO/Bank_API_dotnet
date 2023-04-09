@@ -25,12 +25,12 @@ public class ClientProfile: Profile
                         : dest.Genre ))
             .ForMember(dest => dest.Age, options => options.MapFrom(
                     (source, dest) => 
-                        (source.Age  >= 18 && source.Age <= 150) 
+                        (source != null && (source.Age  >= 18 && source.Age <= 150)) 
                         ? source.Age
                         : dest.Age ))
-            .ForMember(dest => dest.ClientId, options => options.MapFrom( (source, dest ) => dest.ClientId ))
+            .ForMember(dest => dest.ClientId, options => options.Ignore())
             .ForMember(dest => dest.Status, options => options.MapFrom(( source, dest) => dest.Status))
-            .ForMember(dest =>  dest.UserId, options => options.MapFrom( (source, dest ) => dest.ClientId ))
+            .ForMember(dest =>  dest.UserId, options => options.Ignore())
             .ForMember(dest => dest.User, options => options.MapFrom((source, dest) => dest.User))
             .ForMember(dest => dest.CreatedAt, options => options.MapFrom((source, dest) => dest.CreatedAt));
 

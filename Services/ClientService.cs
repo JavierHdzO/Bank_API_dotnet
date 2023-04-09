@@ -118,7 +118,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             if(client is null) return new NotFoundObjectResult( new { Message = $"Client with Id = {Id} not found"});
 
-            client =  _mapper.Map<UpdateClientDto, Client>(updateClientDto);
+            _mapper.Map<UpdateClientDto, Client>(updateClientDto, client);
 
             _mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
@@ -127,8 +127,9 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             return new OkObjectResult( new { Message = "Client has been updated"});
 
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _logger.LogError(exception, "Server Error ");
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
