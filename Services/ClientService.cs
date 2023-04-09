@@ -120,6 +120,8 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             client =  _mapper.Map<UpdateClientDto, Client>(updateClientDto);
 
+            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             await _bankContext.SaveChangesAsync();
 
             return new OkObjectResult( new { Message = "Client has been updated"});
@@ -152,7 +154,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             _logger.LogInformation(client.Name);
 
-            // _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             await _bankContext.SaveChangesAsync();
 
