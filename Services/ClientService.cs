@@ -43,7 +43,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             await _bankContext.SaveChangesAsync();
             
-            return new CreatedResult(nameof(CreateOne), ToClientDto(client));
+            return new CreatedResult(nameof(CreateOne), _mapper.Map<Client, ClientDto>(client));
         }
         catch (Exception exception)
         {
@@ -80,7 +80,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
         try
         {
-            var clients = await _bankContext.Clients.Select( client => ToClientDto( client ) ).ToListAsync();
+            var clients = await _bankContext.Clients.Select( client => _mapper.Map<Client, ClientDto>(client) ).ToListAsync();
 
             return clients;
         }
@@ -100,7 +100,7 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             if(client is null) return new NotFoundResult();
 
-            return ToClientDto(client);
+            return _mapper.Map<Client, ClientDto>(client);
         }
         catch (Exception exception)
         {   
@@ -110,9 +110,28 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
         }
     }
 
-    public Task<bool> UpdateOne(long Id, UpdateClientDto obj)
+    public async Task<ActionResult> UpdateOne(long Id, UpdateClientDto updateClientDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var client = await _bankContext.Clients.SingleAsync( client => client.ClientId == Id && client.Status == true);
+
+            if(client is null) return new NotFoundObjectResult( new { Message = $"Client with Id = {Id} not found"});
+
+            _mapper.Map<UpdateClientDto, Client>(updateClientDto, client);
+
+            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
+            await _bankContext.SaveChangesAsync();
+
+            return new OkObjectResult( new { Message = "Client has been updated"});
+
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Server Error ");
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
     }
 
 
@@ -128,12 +147,16 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
 
             var client = await _bankContext.Clients.FindAsync(Id);
 
-            if(client is null ) return new NotFoundResult();
+            if(client is null || client.Status == false ) return new NotFoundResult();
 
             patchDocClient.ApplyTo(client);
 
-            client = _mapper.Map<Client, Client>(client);
-            
+            _mapper.Map<Client, Client>(client, client);
+
+            _logger.LogInformation(client.Name);
+
+            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             await _bankContext.SaveChangesAsync();
 
             return _mapper.Map<Client, ClientDto>(client);
@@ -144,20 +167,6 @@ public class ClientService : IContextService<ClientDto, CreateClientDto, UpdateC
             _logger.LogError(exception, "Error");
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
-    }
-
-
-    private static ClientDto ToClientDto(Client client){
-
-        return new ClientDto{
-            ClientId = client.ClientId,
-            Name = client.Name,
-            LastName =  client.LastName,
-            Age = client.Age,
-            Genre = client.Genre,
-            UserId = client.UserId
-        };
-
     }
 
 }

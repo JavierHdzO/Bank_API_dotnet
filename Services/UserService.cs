@@ -112,7 +112,7 @@ public class UserService : IContextService<UserDto, CreateUserDto, UpdateUserDto
 
 
 
-    public Task<bool> UpdateOne(long Id, UpdateUserDto obj)
+    public Task<ActionResult> UpdateOne(long Id, UpdateUserDto obj)
     {
         throw new NotImplementedException();
     }
