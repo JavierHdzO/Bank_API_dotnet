@@ -1,5 +1,6 @@
 using AutoMapper.Configuration.Annotations;
-using bank_api.Models;
+
+namespace bank_api.Models;
 
 public class AccountType {
 
@@ -10,4 +11,5 @@ public class AccountType {
     public DateTime? RegDate {get; set;}
 
     public List<Account> Accounts {get; set;} = null!;
+
 }
