@@ -72,7 +72,7 @@ public class BankContext: DbContext {
                 accountEntity.Property( account => account.Balance )
                     .IsRequired()
                     .HasColumnType("money")
-                    .HasDefaultValue(0);
+                    .HasDefaultValue(0.0f);
                 accountEntity.Property( account => account.CreatedAt ).HasDefaultValueSql("now()");
                 accountEntity.Property( account => account.ClientId ).IsRequired();
 
