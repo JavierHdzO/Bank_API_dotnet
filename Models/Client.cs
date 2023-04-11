@@ -25,4 +25,7 @@ public class Client {
 
     [Ignore]
     public User User {get; set;} = null!;
+
+    [Ignore]
+    public List<Account> Accounts {get; set;} = null!;
 }

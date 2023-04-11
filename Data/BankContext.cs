@@ -14,6 +14,7 @@ public class BankContext: DbContext {
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
 
+        //Roles Entity
         modelBuilder.Entity<Role>(
             roleEntity => {
                 roleEntity.Property( role => role.Type ).IsRequired();
@@ -22,6 +23,7 @@ public class BankContext: DbContext {
             }
         );
 
+        //User entity
         modelBuilder.Entity<User>( 
             userEntity => {
                 userEntity.Property( user => user.Email ).IsRequired();
@@ -40,6 +42,7 @@ public class BankContext: DbContext {
             
         );
 
+        //Client Entity
         modelBuilder.Entity<Client>(
             clientEntity => {
                 clientEntity.Property( client => client.Name )
@@ -59,6 +62,37 @@ public class BankContext: DbContext {
                     .WithOne( user => user.Client );
                 
                 clientEntity.HasAlternateKey( client => client.UserId);
+
+            }
+        );
+
+        // Account Entity
+        modelBuilder.Entity<Account>( 
+            accountEntity => {
+                accountEntity.Property( account => account.Balance )
+                    .IsRequired()
+                    .HasColumnType("money")
+                    .HasDefaultValue(0);
+                accountEntity.Property( account => account.CreatedAt ).HasDefaultValueSql("now()");
+                accountEntity.Property( account => account.ClientId ).IsRequired();
+
+                accountEntity
+                    .HasOne( account  => account.Client )
+                    .WithMany( client => client.Accounts );
+
+                accountEntity
+                    .HasOne( account => account.AccountType )
+                    .WithMany( accountType => accountType.Accounts );
+
+            }
+        );
+
+        // Account Entity 
+
+        modelBuilder.Entity<AccountType>( 
+            accountTypeEntity =>{
+                accountTypeEntity.Property( accountType => accountType.Name ).IsRequired().HasColumnType("varchar(100)");
+                accountTypeEntity.Property( accountType => accountType.RegDate ).HasDefaultValueSql("now()");
 
             }
         );
