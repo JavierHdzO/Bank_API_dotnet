@@ -10,6 +10,10 @@ public class BankContext: DbContext {
 
     public DbSet<Client> Clients {get; set;} = null!;
 
+    public DbSet<Account> Accounts {get; set;} = null!;
+
+    public DbSet<AccountType> AccountTypes {get; set;} = null!;
+
     public BankContext(DbContextOptions<BankContext> options): base(options){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
