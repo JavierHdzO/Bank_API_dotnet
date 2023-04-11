@@ -32,6 +32,7 @@ public class ClientProfile: Profile
             .ForMember(dest => dest.Status, options => options.MapFrom(( source, dest) => dest.Status))
             .ForMember(dest =>  dest.UserId, options => options.Ignore())
             .ForMember(dest => dest.User, options => options.MapFrom((source, dest) => dest.User))
+            .ForMember(dest => dest.Accounts, options => options.MapFrom((source, dest) => dest.Accounts ))
             .ForMember(dest => dest.CreatedAt, options => options.MapFrom((source, dest) => dest.CreatedAt));
 
         CreateMap<Client, ClientDto>();
