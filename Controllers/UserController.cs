@@ -59,7 +59,7 @@ public class UserController: ControllerBase {
     }
 
 
-    [Authorize( Policy = "AdminRole" )]
+    [Authorize( Policy = "Manager" )]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using bank_api.Interfaces;
 using bank_api.Models.Dtos;
 using bank_api.Services;
 
 namespace bank_api.Controllers;
 
+// [Authorize(Policy = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class AccountTypeController: ControllerBase {
@@ -16,6 +19,7 @@ public class AccountTypeController: ControllerBase {
         _accountTypeService = (AccountTypeService) accountTypeService;
     }
 
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AccountTypeDto>>> GetAllAccountType(){
         return await _accountTypeService.GetAll();
@@ -36,6 +40,12 @@ public class AccountTypeController: ControllerBase {
     public async Task<ActionResult> UpdateAccountType([FromRoute] long Id, [FromBody] UpdateAccountTypeDto updateAccountTypeDto){
 
         return await _accountTypeService.UpdateOne(Id, updateAccountTypeDto);
+    }
+
+
+    [HttpPatch("{Id}")]
+    public async Task<ActionResult> PatchUpdateAccountType([FromRoute] long Id, JsonPatchDocument<UpdateAccountTypeDto> jsonPatchDocument){
+        return await _accountTypeService.PatchUpdateOne(Id, jsonPatchDocument);
     }
 
     

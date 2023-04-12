@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using bank_api.Interfaces;
@@ -99,6 +100,31 @@ public class AccountTypeService : IContextService<AccountTypeDto, CreateAccountT
         catch(Exception exception){
             _logger.LogError(exception, "Server error");
             return new StatusCodeResult( StatusCodes.Status500InternalServerError);
+        }
+    }
+
+
+    public async Task<ActionResult> PatchUpdateOne(long Id, JsonPatchDocument<UpdateAccountTypeDto> jsonPatchDocumentUpdate){
+
+        try
+        {
+            JsonPatchDocument<AccountType> jsonPatchDocument = new JsonPatchDocument<AccountType>();
+            _mapper.Map<JsonPatchDocument<UpdateAccountTypeDto>, JsonPatchDocument<AccountType>>(jsonPatchDocumentUpdate, jsonPatchDocument);
+
+            var accountType = await _bankContext.AccountTypes.SingleAsync( accountType => accountType.AccountTypeId == Id);
+
+            jsonPatchDocument.ApplyTo(accountType);
+
+            await _bankContext.SaveChangesAsync();
+
+            return new OkObjectResult(new { Message = "Account Type has been successfully updated"});
+
+
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Server error");
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
 }

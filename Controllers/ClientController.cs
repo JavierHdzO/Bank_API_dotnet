@@ -10,6 +10,7 @@ using bank_api.Interfaces;
 
 namespace bank_api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ClientController: ControllerBase {
@@ -22,17 +23,20 @@ public class ClientController: ControllerBase {
         _clientService =  (ClientService) clientService;
     }
     
+    [Authorize(Policy = "Manager")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ClientDto>>> GetClients(){
 
         return await _clientService.GetAll();
     }
 
+    [Authorize(Policy = "Manager")]
     [HttpPost]
     public async Task<ActionResult<ClientDto>> PostClient([FromBody] CreateClientDto createClientDto){
 
         return await _clientService.CreateOne(createClientDto);
     }
+
 
     [HttpGet("{Id}")]
     public async Task<ActionResult<ClientDto>> GetClient([FromRoute] long Id){
@@ -41,16 +45,19 @@ public class ClientController: ControllerBase {
         return client!;
     }
 
+    [Authorize(Policy = "Manager")]
     [HttpPatch("{Id}")]
     public async Task<ActionResult<ClientDto>> PatchUpdateOne(long Id, [FromBody] JsonPatchDocument<UpdateClientDto> patchDoc){
         return await _clientService.PatchUpdateOne(Id, patchDoc);
     }
 
+    [Authorize(Policy = "Manager")]
     [HttpPut("{Id}")]
     public async Task<ActionResult> UpdateClient(long Id, [FromBody] UpdateClientDto updateClientDto){
         return await _clientService.UpdateOne(Id, updateClientDto);
     }
 
+    [Authorize(Policy = "Manager")]
     [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteClient([FromRoute] long Id){
 

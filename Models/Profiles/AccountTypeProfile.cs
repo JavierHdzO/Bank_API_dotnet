@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using AutoMapper;
 using bank_api.Models;
 using bank_api.Models.Dtos;
@@ -22,6 +24,10 @@ public class AccountTypeProfile: Profile {
             .AddTransform<String>( val => val.ToUpper() )
             .ForMember( dest => dest.AccountTypeId, options => options.Ignore() )
             .ForMember( dest => dest.RegDate, options => options.Ignore() );
+
+        CreateMap<JsonPatchDocument<UpdateAccountTypeDto>, JsonPatchDocument<AccountType>>();
+
+        CreateMap<Operation<UpdateAccountTypeDto>, Operation<AccountType>>();
     }
 
 }
