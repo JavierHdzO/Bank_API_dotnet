@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using bank_api.Interfaces;
 using bank_api.Data;
 using bank_api.Models;
@@ -11,15 +14,18 @@ public class AccountService : IContextService<AccountDto, CreateAccountDto, Upda
     private readonly ILogger _logger;
     private readonly BankContext _bankContext;
     private readonly IMapper _mapper;
+    private readonly IValidator<Account> _validator;
 
     public AccountService(
         ILogger<AccountService> logger,
         BankContext bankContext,
-        IMapper mapper
+        IMapper mapper,
+        IValidator<Account> validator
     ){
         _logger = logger;
         _bankContext = bankContext;
         _mapper = mapper;
+        _validator = validator;
 
     }
 
@@ -36,11 +42,7 @@ public class AccountService : IContextService<AccountDto, CreateAccountDto, Upda
 
             await _bankContext.SaveChangesAsync();
 
-            return new CreatedAtActionResult( 
-                nameof(CreateOne), 
-                "CreateAccount",
-                new { Id = account.AccountId}, 
-                _mapper.Map<Account, AccountDto>(account));
+            return   _mapper.Map<Account, AccountDto>(account);
 
         }
         catch (Exception exception)
@@ -107,5 +109,41 @@ public class AccountService : IContextService<AccountDto, CreateAccountDto, Upda
             _logger.LogError(exception, "Server error");
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
+    }
+
+    public async Task<ActionResult> PatchUpdateOne(long Id, JsonPatchDocument<UpdateAccountDto> updateJsonDoc){
+
+        
+        try
+        {   
+            JsonPatchDocument<Account> jsonDoc = new JsonPatchDocument<Account>();
+            _mapper.Map<JsonPatchDocument<UpdateAccountDto>, JsonPatchDocument<Account>>(updateJsonDoc, jsonDoc);
+
+            var account = await _bankContext.Accounts.FindAsync(Id);
+            if(account is null) return new NotFoundObjectResult( new { Message = "Account was not found"});
+
+            ValidationResult validationResult = await _validator.ValidateAsync(account);
+
+            if( !validationResult.IsValid ) {
+                
+                return new BadRequestObjectResult(  new {
+                    Message = "Ensure the fields have requirements of contraints", 
+                    Errors = validationResult.Errors});
+            }
+
+            jsonDoc.ApplyTo(account);
+            await _bankContext.SaveChangesAsync();
+
+            return new OkObjectResult(new { Message = "Account has been successfully updated"});
+
+
+        }
+        catch (Exception exception)
+        {
+            
+            _logger.LogError(exception, "Server error");
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+
     }
 }

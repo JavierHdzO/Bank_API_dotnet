@@ -1,6 +1,6 @@
 using bank_api.Formatters;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +9,7 @@ using bank_api.Data;
 using bank_api.Models.Dtos;
 using bank_api.Models.Profiles;
 using bank_api.Interfaces;
+using bank_api.Models.Validators;
 using bank_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,7 @@ builder.Services.AddAutoMapper(typeof(ClientProfile), typeof(AccountTypeProfile)
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 builder.Services.AddScoped<IContextService<AccountTypeDto, CreateAccountTypeDto, UpdateAccountTypeDto>, AccountTypeService>();
+builder.Services.AddScoped<IValidator<Account>, AccountValidator>();
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
 builder.Services.AddScoped<IContextService<ClientDto, CreateClientDto, UpdateClientDto>, ClientService>();
 builder.Services.AddScoped<IContextService<AccountDto, CreateAccountDto, UpdateAccountDto>, AccountService>();
