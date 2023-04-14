@@ -87,8 +87,25 @@ public class AccountService : IContextService<AccountDto, CreateAccountDto, Upda
         }
     }
 
-    public Task<ActionResult> UpdateOne(long Id, UpdateAccountDto updateAccountDto)
+    public async Task<ActionResult> UpdateOne(long Id, UpdateAccountDto updateAccountDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var account = await _bankContext.Accounts.FindAsync(Id);
+
+            if(account is null) return new NotFoundResult();
+
+            _mapper.Map<UpdateAccountDto, Account>(updateAccountDto, account);
+
+            await _bankContext.SaveChangesAsync();
+
+            return new OkObjectResult( new {Message = "Account has been successfully updated"});
+        }
+        catch (Exception exception)
+        {
+            
+            _logger.LogError(exception, "Server error");
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
     }
 }

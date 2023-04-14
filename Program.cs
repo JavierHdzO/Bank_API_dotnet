@@ -31,6 +31,7 @@ builder.Services.AddTransient(typeof(IPasswordHasher<>), typeof(PasswordHasher<>
 builder.Services.AddScoped<IContextService<AccountTypeDto, CreateAccountTypeDto, UpdateAccountTypeDto>, AccountTypeService>();
 builder.Services.AddScoped<IContextService<UserDto, CreateUserDto, UpdateUserDto>, UserService>();
 builder.Services.AddScoped<IContextService<ClientDto, CreateClientDto, UpdateClientDto>, ClientService>();
+builder.Services.AddScoped<IContextService<AccountDto, CreateAccountDto, UpdateAccountDto>, AccountService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer( option => {
