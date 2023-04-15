@@ -42,7 +42,7 @@ public class AccountService : IContextService<AccountDto, CreateAccountDto, Upda
 
             await _bankContext.SaveChangesAsync();
 
-            return   _mapper.Map<Account, AccountDto>(account);
+            return  _mapper.Map<Account, AccountDto>(account);
 
         }
         catch (Exception exception)
