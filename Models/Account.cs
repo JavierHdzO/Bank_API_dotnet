@@ -9,11 +9,12 @@ public class Account {
 
     public DateTime? CreatedAt {get; set;}
 
-    public Client Client {get; set;} = null!;
     public long ClientId {get; set;}
 
     public long AccountTypeId {get; set;}
 
+    public Client Client {get; set;} = null!;
+    
     public AccountType AccountType {get; set;} = null!;
     
 }
